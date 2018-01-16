@@ -1,10 +1,17 @@
-import data as d
+def pt(lst,title):
+    print(title,len(lst))
+    for item in lst:
+        print(item)
+    print('')
+
 import os
 
 try:
-    os.remove("./test.db")
+    os.remove("test.db")
 except:
     print("remove error")
+
+import data as d
 
 d.sqlInit()
 
@@ -19,14 +26,16 @@ d.insert('x010','c05','single','t2'      ,'3')#8
 d.insert('p021','c02','single','t1 t2 t3','4')#9
 
 r1 = d.search(['t1'])
-print(r1)
+pt(r1,'r1')
 r2 = d.search([],[],[2,3])
-print(r2)
+pt(r2,'r2')
 r3 = d.search(['t1'],['c02'],[1])
-print(r3)
+pt(r3,'r3')
 r4 = d.search(['t1','t2'])
-print(r4)
+pt(r4,'r4')
 r5 = d.search([],[],[3])
-print(r5)
+pt(r5,'r5')
 r6 = d.search([],['c03'])
-print(r6)
+pt(r6,'r6')
+r7 = d.search([],['c01','c02'])
+pt(r7,'r7')
