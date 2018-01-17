@@ -43,7 +43,9 @@ def search(tags,creators=[],hmode=[0,1,2,3,4]):
     sql = sql+")"
     res = cursor.execute(sql)
     return res.fetchall()
-    
+
+def ci():
+    conn.commit()
     
 
 ##sql = '''CREATE TABLE data(tag1 text,id int)'''
