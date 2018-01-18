@@ -21,7 +21,6 @@ def ret(event):
             ib[i].showImg(path[i]+'.jpg')
         except:
             ib[i].showImg(path[i]+'.png') 
-##    print(dd.randomGet())
 
 def keypress(event):
     global stat
@@ -52,6 +51,7 @@ class imgBlock:
         self.imgpath = ''
         self.lx = x
         self.ly = y
+        self.tags = {}
     def showImg(self,path):
         self.imgpath = path
         load = Image.open(self.imgpath)
@@ -71,6 +71,31 @@ class imgBlock:
         img.bind("<Button-1>",handlerAdaptor(click,num=self.num))
         img.image = render
         img.place(x=self.lx,y=self.ly)
+    def addTag(self,tag):
+        if tag in self.tags.keys():
+            return False
+        taglabel = Label(self.tk,text=tag,bg='red',width=10)
+        self.tags[tag]=taglabel
+        num = len(self.tags)
+        px = ((num-1)%3)*107+7
+        py = int((num-1)/3)
+        py = 320-(py+1)*30
+        taglabel.place(x=self.lx+px,y=self.ly+py)
+        return True
+    def removeTag(self,tag):
+        if not tag in self.tags.keys():
+            return False
+        for k,v in self.tags.items():
+            if k==tag:
+                v.place_forget()
+                del self.tags[tag]
+                print(self.tags)
+                return True
+    def clearTags(self):
+        for k,v in self.tags.items():
+            v.place_forget()
+        self.tags={}
+            
 
 
 root = Tk()
@@ -92,15 +117,22 @@ ib2 = imgBlock(root,350,680,2)
 ib3 = imgBlock(root,680,680,3)
 ib = ['',ib1,ib2,ib3,ib4,ib5,ib6,ib7,ib8,ib9]
 
-##ib7.showImg('./img/test.png')
-##ib5.showImg('./img/5.jpg')
-##ib3.showImg('./img/7.jpg')
 
-
-can.create_line(0,0,1000,1000)
+##can.create_line(0,0,1000,1000)
 rec = can.create_rectangle(10,10,340,340,width=5,outline='red')
 
-Label(root,text='tag1',bg='red').place(x=200,y=200)
+##Label(root,text='tag1',bg='red',width=10).place(x=200,y=200)
+def btclick():
+    print(ib5.addTag('tagtagtag'))
+    print(ib5.addTag('tag1'))
+    print(ib5.addTag('tag2'))
+def clear():
+    ib5.clearTags()
+def button3():
+    ib5.removeTag('tag1')
+Button(root,text='add tag',command=btclick).place(x=1100,y=200)
+Button(root,text='clear tag',command=clear).place(x=1100,y=400)
+Button(root,text='button3',command=button3).place(x=1100,y=600)
 
 #root.update()
 root.mainloop()
