@@ -89,8 +89,17 @@ class imgBlock:
             if k==tag:
                 v.place_forget()
                 del self.tags[tag]
+                self.tagReplace()
                 print(self.tags)
                 return True
+    def tagReplace(self):
+        i = 0
+        for k,v in self.tags.items():
+            i += 1
+            px = ((i-1)%3)*107+7
+            py = int((i-1)/3)
+            py = 320-(py+1)*30
+            v.place(x=self.lx+px,y=self.ly+py)
     def clearTags(self):
         for k,v in self.tags.items():
             v.place_forget()
