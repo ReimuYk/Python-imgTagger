@@ -1,0 +1,6 @@
+H-1	F1	white
+H-2	F2	white
+H-3	F3	white
+H-4	F4	white
+H-5	F5	white
+ÖÆ·þ	z	blue
