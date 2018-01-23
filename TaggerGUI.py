@@ -12,6 +12,9 @@ def test():
 def click(event,num):
     print('click',num)
 
+def unpack(event,item):
+    item.place_forget()
+
 highlighted = []
 recSize = (320,320)
 recLocation = { \
@@ -40,7 +43,7 @@ def updateData():
     checklist = []
     for i in range(1,10):
         l = list(ib[i].tags)
-        if not (('H1' in l) or ('H2' in l) or ('H3' in l) or ('H4' in l) or ('H5' in l) or ('dislike' in l)):
+        if not (('H1' in l) or ('H2' in l) or ('H3' in l) or ('H4' in l) or ('H5' in l) or ('dislike' in l) or ('ignore' in l)):
             checklist.append(i)
     if len(checklist)!=0:
         highlight(checklist,'#FFB90F')
@@ -49,6 +52,8 @@ def updateData():
     f = open('history.txt','a')
     for i in range(1,10):
         l = list(ib[i].tags)
+        if 'ignore' in l:
+            continue
         hmode = 0
         if 'H1' in l:hmode=1
         if 'H2' in l:hmode=2
@@ -99,7 +104,12 @@ def statChange(v1,v2):
         highlight([v2])
     else:
         highlight([])
+    if stat[0]=='letter':
+        s2.set(tagKey[stat[1]][0])
+    else:
+        s2.set('')
     st.set(str(stat))
+    
 
 def keypress(event):
     global stat
@@ -121,14 +131,14 @@ def keypress(event):
             statChange('letter',c)
         if stat[0]=='number':
             ib[int(stat[1])].tag(tagKey[c][0])
-            print('tag',stat[1],c)
+##            print('tag',stat[1],c)
     if '1'<=c and c<='9':
         if stat[0]=='' or stat[0]=='number':
             statChange('number',c)
         if stat[0]=='letter':
             ib[int(c)].tag(tagKey[stat[1]][0])
-            print('tag',c,stat[1])
-    print(stat)
+##            print('tag',c,stat[1])
+##    print(stat)
 
 def handlerAdaptor(fun,**kwds):
     return lambda event,fun=fun,kwds=kwds: fun(event,**kwds)
@@ -157,9 +167,17 @@ class imgBlock:
             load = ie.addEdge(load,0,0,edge,edge)
         render = ImageTk.PhotoImage(load)
         img = Label(self.tk,image = render)
-        img.bind("<Button-1>",handlerAdaptor(click,num=self.num))
+##        img.bind("<Button-1>",handlerAdaptor(click,num=self.num))
+        img.bind("<Button-1>",handlerAdaptor(self.click))
         img.image = render
         img.place(x=self.lx,y=self.ly)
+    def click(self,event):
+        load = Image.open(self.imgpath)
+        render = ImageTk.PhotoImage(load)
+        img = Label(self.tk,image=render)
+        img.bind("<Button-1>",handlerAdaptor(unpack,item=img))
+        img.image = render
+        img.place(x=0,y=0)
     def tag(self,tag):
         if not self.addTag(tag):
             self.removeTag(tag)
@@ -261,6 +279,8 @@ ib = ['',ib1,ib2,ib3,ib4,ib5,ib6,ib7,ib8,ib9]
 fm = tagFrame()
 st = StringVar()
 statLabel = Label(root,textvariable=st).place(x=1100,y=100)
+s2 = StringVar()
+tagLabel = Label(root,textvariable=s2,font=("黑体",30,"bold")).place(x=1100,y=900)
 
 def btclick():
     print(ib5.addTag('tagtagtag'))
@@ -280,8 +300,8 @@ def button3():
         s = '|'.join(tg)
         print(s)
 ##Button(root,text='add tag',command=btclick).place(x=1100,y=200)
-Button(root,text='button2',command=button2).place(x=1100,y=500)
-Button(root,text='button3',command=button3).place(x=1100,y=600)
+##Button(root,text='button2',command=button2).place(x=1100,y=500)
+##Button(root,text='button3',command=button3).place(x=1100,y=600)
 
 randomSet()
 #root.update()
