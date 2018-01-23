@@ -274,16 +274,11 @@ class tagFrame:
         item.pack_forget()
         del tagKey[item.key]
         print(tagKey)
-            
-            
         
-    
-        
-
-
 root = Tk()
 root.title("imgTagger")
 root.geometry('1400x1000')
+root.attributes("-fullscreen",True)
 root.bind("<Return>",ret)
 root.bind("<Key>",keypress)
 can = Canvas(root,width=1000,height=1000)
@@ -306,6 +301,19 @@ statLabel = Label(root,textvariable=st).place(x=1100,y=100)
 s2 = StringVar()
 tagLabel = Label(root,textvariable=s2,font=("黑体",30,"bold")).place(x=1100,y=900)
 
+Button(root,text='换一批',command=randomSet).place(x=1100,y=600)
+def screenSwitch(state):
+    root.attributes("-fullscreen",state)
+    if state:
+        fullon.place_forget()
+        fulloff.place(x=1100,y=700)
+    else:
+        fulloff.place_forget()
+        fullon.place(x=1100,y=700)
+fullon = Button(root,text='全屏',command=lambda:screenSwitch(True))
+fulloff = Button(root,text='退出全屏',command=lambda:screenSwitch(False))
+fulloff.place(x=1100,y=700)
+
 def btclick():
     print(ib5.addTag('tagtagtag'))
     print(ib5.addTag('tag1'))
@@ -325,9 +333,8 @@ def button3():
         print(s)
 ##Button(root,text='add tag',command=btclick).place(x=1100,y=200)
 ##Button(root,text='button2',command=button2).place(x=1100,y=500)
-Button(root,text='换一批',command=randomSet).place(x=1100,y=600)
+
 
 randomSet()
-#root.update()
 root.mainloop()
 
