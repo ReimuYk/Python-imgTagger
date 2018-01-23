@@ -5,3 +5,5 @@
 10448310	くまもと	single	dislike	nop
 15849869	マヨ	single	灵梦|东方|H1	1
 59883222	まさる.jp	single	铃仙|东方|H1	1
+2618855	夏海あきら	single	dislike	nop
+19681834	ひかにゃん	single	dislike	nop

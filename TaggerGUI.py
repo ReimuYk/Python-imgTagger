@@ -1,4 +1,5 @@
 from tkinter import *
+import re
 from PIL import Image, ImageTk
 import imgedit as ie
 import downloadData as dd
@@ -12,8 +13,21 @@ def test():
 def click(event,num):
     print('click',num)
 
-def unpack(event,item):
-    item.place_forget()
+def repack(event,unitem,tpth=''):
+    unitem.place_forget()
+    if tpth!='':
+        try:
+            temp = re.split('_',tpth)
+            newpath = temp[0]+'_'+str(int(temp[1][:-4])+1)+'.jpg'
+            load = Image.open(newpath)
+            render = ImageTk.PhotoImage(load)
+            img = Label(root,image=render)
+            img.image=render
+            img.place(x=0,y=0)
+            img.bind("<Button-1>",handlerAdaptor(repack,unitem=img))
+            img.bind("<Button-3>",handlerAdaptor(repack,unitem=img,tpth=newpath))
+        except Exception as e:
+            pass
 
 highlighted = []
 recSize = (320,320)
@@ -89,13 +103,13 @@ def randomSet():
             pth = pth+r'/'+lst[i][2]+r'_0'
         path.append(pth)
     for i in range(1,10):
+        ib[i].pid = lst[i-1][2]
+        ib[i].creator = lst[i-1][1]
+        ib[i].typ = lst[i-1][3]
         try:
             ib[i].showImg(path[i]+'.jpg')
         except:
             ib[i].showImg(path[i]+'.png')
-        ib[i].pid = lst[i-1][2]
-        ib[i].creator = lst[i-1][1]
-        ib[i].typ = lst[i-1][3]
 
 def statChange(v1,v2):
     global stat
@@ -171,11 +185,21 @@ class imgBlock:
         img.bind("<Button-1>",handlerAdaptor(self.click))
         img.image = render
         img.place(x=self.lx,y=self.ly)
+        #set logo
+        if self.typ=='set':
+            setload = Image.open('./asset/logo-set.png')
+            setrender = ImageTk.PhotoImage(setload)
+            logo = Label(self.tk,image = setrender)
+            logo.image = setrender
+            logo.place(x=self.lx,y=self.ly)
     def click(self,event):
+        print('click detail:  '+self.imgpath)
         load = Image.open(self.imgpath)
         render = ImageTk.PhotoImage(load)
         img = Label(self.tk,image=render)
-        img.bind("<Button-1>",handlerAdaptor(unpack,item=img))
+        img.bind("<Button-1>",handlerAdaptor(repack,unitem=img))
+        if self.typ=='set':
+            img.bind("<Button-3>",handlerAdaptor(repack,unitem=img,tpth=self.imgpath))
         img.image = render
         img.place(x=0,y=0)
     def tag(self,tag):
@@ -301,7 +325,7 @@ def button3():
         print(s)
 ##Button(root,text='add tag',command=btclick).place(x=1100,y=200)
 ##Button(root,text='button2',command=button2).place(x=1100,y=500)
-##Button(root,text='button3',command=button3).place(x=1100,y=600)
+Button(root,text='换一批',command=randomSet).place(x=1100,y=600)
 
 randomSet()
 #root.update()
