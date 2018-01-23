@@ -18,6 +18,13 @@ def insert(uid,uname,pid,mode):
     except Exception as e:
         print(e)
 
+def tag(pid):
+    try:
+        sql = "UPDATE download SET tag = 'tagged' WHERE pid='"+pid+"'"
+        cursor.execute(sql)
+    except Exception as e:
+        print(e)
+
 def select(pid):
     sql = "SELECT * FROM download WHERE pid='"+pid+"'"
     res = cursor.execute(sql).fetchall()
@@ -32,6 +39,11 @@ def check(pid):
     
 def getUntag():
     sql = "SELECT * FROM download WHERE tag='untagged'"
+    res = cursor.execute(sql).fetchall()
+    return res
+
+def getTag():
+    sql = "SELECT * FROM download WHERE tag='tagged'"
     res = cursor.execute(sql).fetchall()
     return res
 

@@ -1,6 +1,6 @@
 import sqlite3
 
-conn = sqlite3.connect('./test.db')
+conn = sqlite3.connect('./tagdata.db')
 cursor = conn.cursor()
 
 def sqlInit():
@@ -43,6 +43,12 @@ def search(tags,creators=[],hmode=[0,1,2,3,4]):
     sql = sql+")"
     res = cursor.execute(sql)
     return res.fetchall()
+
+def getAll():
+    sql = "SELECT * FROM pxv"
+    res = cursor.execute(sql).fetchall()
+    return res
+    
 
 def ci():
     conn.commit()
