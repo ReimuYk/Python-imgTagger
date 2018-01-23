@@ -301,7 +301,31 @@ statLabel = Label(root,textvariable=st).place(x=1100,y=100)
 s2 = StringVar()
 tagLabel = Label(root,textvariable=s2,font=("黑体",30,"bold")).place(x=1100,y=900)
 
+# tag计数
+n1 = StringVar()
+n2 = StringVar()
+n3 = StringVar()
+def freshNumbers(event):
+    global n1,n2,n3
+    tgnum = len(dt.getAll())
+    n1.set('tagged:'+str(tgnum))
+    untgnum = len(dd.getUntag())
+    n2.set('untagged:'+str(untgnum))
+    n3.set('total:'+str(tgnum+untgnum))
+tagnum = Label(root,textvariable=n1,font=("黑体",20,'bold'))
+untagnum = Label(root,textvariable=n2,font=("黑体",20,'bold'))
+totalnum = Label(root,textvariable=n3,font=("黑体",20,'bold'))
+tagnum.place(x=1100,y=800)
+untagnum.place(x=1100,y=830)
+totalnum.place(x=1100,y=860)
+tagnum.bind("<Button-1>",freshNumbers)
+untagnum.bind("<Button-1>",freshNumbers)
+totalnum.bind("<Button-1>",freshNumbers)
+
+# 换一批按键
 Button(root,text='换一批',command=randomSet).place(x=1100,y=600)
+
+# 全屏切换
 def screenSwitch(state):
     root.attributes("-fullscreen",state)
     if state:
@@ -336,5 +360,6 @@ def button3():
 
 
 randomSet()
+freshNumbers(None)
 root.mainloop()
 
