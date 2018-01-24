@@ -4,6 +4,7 @@ from PIL import Image, ImageTk
 import imgedit as ie
 import downloadData as dd
 import data as dt
+import pixiv as p
 
 stat = ('','')
 
@@ -181,8 +182,8 @@ class imgBlock:
             load = ie.addEdge(load,0,0,edge,edge)
         render = ImageTk.PhotoImage(load)
         img = Label(self.tk,image = render)
-##        img.bind("<Button-1>",handlerAdaptor(click,num=self.num))
         img.bind("<Button-1>",handlerAdaptor(self.click))
+        img.bind("<Button-3>",handlerAdaptor(self.detail))
         img.image = render
         img.place(x=self.lx,y=self.ly)
         #set logo
@@ -202,6 +203,11 @@ class imgBlock:
             img.bind("<Button-3>",handlerAdaptor(repack,unitem=img,tpth=self.imgpath))
         img.image = render
         img.place(x=0,y=0)
+    def detail(self,event):
+        info = p.getTags(self.pid)
+        l = Label(self.tk,text=str(info))
+        l.bind("<Button-1>",handlerAdaptor(repack,unitem=l))
+        l.place(x=self.lx,y=self.ly)
     def tag(self,tag):
         if not self.addTag(tag):
             self.removeTag(tag)
@@ -242,7 +248,7 @@ tagKey={}
 class tagFrame:
     def __init__(self):
         self.fm = Frame(height = 500,width = 300,relief='solid')
-        self.fm.place(x=1050,y=150)
+        self.fm.place(x=1050,y=30)
         self.addfm = Frame(self.fm,width=300)
         self.t1 = StringVar()
         Entry(self.addfm,textvariable=self.t1,width=10,relief='solid').grid(row=0,column=0)
@@ -297,7 +303,7 @@ ib = ['',ib1,ib2,ib3,ib4,ib5,ib6,ib7,ib8,ib9]
 
 fm = tagFrame()
 st = StringVar()
-statLabel = Label(root,textvariable=st).place(x=1100,y=100)
+statLabel = Label(root,textvariable=st).place(x=1100,y=10)
 s2 = StringVar()
 tagLabel = Label(root,textvariable=s2,font=("黑体",30,"bold")).place(x=1100,y=900)
 
@@ -323,20 +329,20 @@ untagnum.bind("<Button-1>",freshNumbers)
 totalnum.bind("<Button-1>",freshNumbers)
 
 # 换一批按键
-Button(root,text='换一批',command=randomSet).place(x=1100,y=600)
+Button(root,text='换一批',command=randomSet).place(x=1300,y=600)
 
 # 全屏切换
 def screenSwitch(state):
     root.attributes("-fullscreen",state)
     if state:
         fullon.place_forget()
-        fulloff.place(x=1100,y=700)
+        fulloff.place(x=1300,y=700)
     else:
         fulloff.place_forget()
-        fullon.place(x=1100,y=700)
+        fullon.place(x=1300,y=700)
 fullon = Button(root,text='全屏',command=lambda:screenSwitch(True))
 fulloff = Button(root,text='退出全屏',command=lambda:screenSwitch(False))
-fulloff.place(x=1100,y=700)
+fulloff.place(x=1300,y=700)
 
 def btclick():
     print(ib5.addTag('tagtagtag'))
