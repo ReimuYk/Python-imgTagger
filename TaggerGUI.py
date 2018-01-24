@@ -244,46 +244,61 @@ class imgBlock:
             v.place_forget()
         self.tags={}
 
-tagKey={}
+tagKey={}# key:(tag,color)
+class keyButton:
+    def __init__(self,fm,kid,bx,by):
+        self.bt = Button(fm,text=kid,width=7,height=3,font=("黑体",10,'bold'),command=self.click)
+        self.bt.place(x=bx,y=by)
+        self.fm = fm
+        self.kid = kid
+        self.x = bx
+        self.y = by
+        self.tag = StringVar()
+        self.ety = Entry(self.fm,textvariable=self.tag,width=10)
+        self.ety.bind("<Key>",self.fresh)
+    def click(self):
+        self.ety.place(x=self.x,y=self.y+20)
+    def setTag(self,tag,color):
+        self.bt['bg']=color
+        tagKey[self.kid]=(tag,color)
+        self.bt['text']=self.kid+'\n'+tag
+        self.tag.set(tag)
+        try:
+            self.ety.place_forget()
+        except:
+            print('err')
+    def fresh(self,event):
+        if event.keysym!='End':
+            return
+        self.setTag(self.tag.get(),'white')
+
+keydict={}
 class tagFrame:
     def __init__(self):
-        self.fm = Frame(height = 500,width = 300,relief='solid')
-        self.fm.place(x=1050,y=30)
-        self.addfm = Frame(self.fm,width=300)
-        self.t1 = StringVar()
-        Entry(self.addfm,textvariable=self.t1,width=10,relief='solid').grid(row=0,column=0)
-        self.t2 = StringVar()
-        Entry(self.addfm,textvariable=self.t2,width=10,relief='solid').grid(row=0,column=1)
-        Button(self.addfm,text='add',width=8,command=lambda:self.addItem(self.t1.get(),self.t2.get(),'white')).grid(row=0,column=2)
-        self.addfm.pack()
+        self.fm = Frame(root,width = 700,height = 700,relief='solid')
+        self.fm.place(x=1050,y=100)
+        self.keyboard()
         self.fromFile('tags.txt')
-    def addItem(self,left,right,color):
-        tagKey[right]=(left,color)
-        newFrame = Frame(self.fm,width=300)
-        newFrame.key=right
-        Label(newFrame,text=left,bg=color,relief='solid',width=10).grid(row=0,column=0)
-        Label(newFrame,text=right,bg='white',relief='solid',width=10).grid(row=0,column=1)
-        Button(newFrame,text='del',command=lambda:self.delItem(newFrame),width=8).grid(row=0,column=2)
-        self.addfm.pack_forget()
-        newFrame.pack()
-        self.addfm.pack()
-        self.t1.set('')
-        self.t2.set('')
+    def keyboard(self):
+        keys=[['F1','F2','F3','F4','F5'],['q','w','e','r','t','y','u','i','o','p'],['a','s','d','f','g','h','j','k','l'],['z','x','c','v','b','n','m']]
+        for line in range(4):
+            for num in range(len(keys[line])):
+                t = keys[line][num]
+                l = line-1
+                if line==0:l=0
+                b = keyButton(self.fm,t,70*num+25*l,75*line)
+                keydict[t]=b
     def fromFile(self,filename):
         f = open(filename,'r')
         content = f.readlines()
         for item in content:
             detail = item.split()
             if len(detail)>=3:
-                self.addItem(detail[0],detail[1],detail[2])
-    def delItem(self,item):
-        item.pack_forget()
-        del tagKey[item.key]
-        print(tagKey)
+                keydict[detail[1]].setTag(detail[0],detail[2])
         
 root = Tk()
 root.title("imgTagger")
-root.geometry('1400x1000')
+root.geometry('1800x1000')
 root.attributes("-fullscreen",True)
 root.bind("<Return>",ret)
 root.bind("<Key>",keypress)
@@ -365,7 +380,7 @@ def button3():
 ##Button(root,text='button2',command=button2).place(x=1100,y=500)
 
 
-randomSet()
-freshNumbers(None)
+##randomSet()
+##freshNumbers(None)
 root.mainloop()
 
