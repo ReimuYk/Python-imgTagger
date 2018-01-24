@@ -254,23 +254,27 @@ class keyButton:
         self.x = bx
         self.y = by
         self.tag = StringVar()
-        self.ety = Entry(self.fm,textvariable=self.tag,width=10)
+        self.ety = Entry(self.fm,textvariable=self.tag,width=9)
         self.ety.bind("<Key>",self.fresh)
+        self.ety.bind("<FocusOut>",self.hide)
     def click(self):
-        self.ety.place(x=self.x,y=self.y+20)
+        self.ety.place(x=self.x-1,y=self.y+20)
+        self.ety.focus_set()
     def setTag(self,tag,color):
         self.bt['bg']=color
         tagKey[self.kid]=(tag,color)
         self.bt['text']=self.kid+'\n'+tag
         self.tag.set(tag)
-        try:
-            self.ety.place_forget()
-        except:
-            print('err')
+        self.hide(None)
     def fresh(self,event):
         if event.keysym!='End':
             return
         self.setTag(self.tag.get(),'white')
+    def hide(self,event):
+        try:
+            self.ety.place_forget()
+        except:
+            print('err')
 
 keydict={}
 class tagFrame:
