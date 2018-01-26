@@ -129,7 +129,14 @@ def statChange(v1,v2):
 def keypress(event):
     global stat
     c=event.keysym
+    # reset
     if c=='Shift_L':statChange('','')
+    # tagframe from file
+    ava=['F9','F10','F11','F12']
+    if c in ava:
+        fm.fromFile('./asset/'+c+'.txt')
+        return
+    # else
     try:
         if stat[0]=='' or stat[0]=='letter':
             can['bg']=tagKey[c][1]
@@ -146,14 +153,11 @@ def keypress(event):
             statChange('letter',c)
         if stat[0]=='number':
             ib[int(stat[1])].tag(tagKey[c][0])
-##            print('tag',stat[1],c)
     if '1'<=c and c<='9':
         if stat[0]=='' or stat[0]=='number':
             statChange('number',c)
         if stat[0]=='letter':
             ib[int(c)].tag(tagKey[stat[1]][0])
-##            print('tag',c,stat[1])
-##    print(stat)
 
 def handlerAdaptor(fun,**kwds):
     return lambda event,fun=fun,kwds=kwds: fun(event,**kwds)
@@ -282,7 +286,7 @@ class tagFrame:
         self.fm = Frame(root,width = 700,height = 700,relief='solid')
         self.fm.place(x=1050,y=100)
         self.keyboard()
-        self.fromFile('tags.txt')
+        self.fromFile('./asset/F9.txt')
     def keyboard(self):
         keys=[['F1','F2','F3','F4','F5'],['q','w','e','r','t','y','u','i','o','p'],['a','s','d','f','g','h','j','k','l'],['z','x','c','v','b','n','m']]
         for line in range(4):
@@ -293,12 +297,27 @@ class tagFrame:
                 b = keyButton(self.fm,t,70*num+25*l,75*line)
                 keydict[t]=b
     def fromFile(self,filename):
+        # clear
+        for k,v in keydict.items():
+            v.setTag('---','white')
+        # input file
         f = open(filename,'r')
         content = f.readlines()
         for item in content:
             detail = item.split()
             if len(detail)>=3:
                 keydict[detail[1]].setTag(detail[0],detail[2])
+
+def saveFrame(event,filename):
+    f = open('./asset/'+filename,'w')
+    for k,v in tagKey.items():
+        f.write(v[0])
+        f.write('\t')
+        f.write(k)
+        f.write('\t')
+        f.write(v[1])
+        f.write('\n')
+    print(filename)
         
 root = Tk()
 root.title("imgTagger")
@@ -306,6 +325,10 @@ root.geometry('1800x1000')
 root.attributes("-fullscreen",True)
 root.bind("<Return>",ret)
 root.bind("<Key>",keypress)
+root.bind("<Alt-F9>",handlerAdaptor(saveFrame,filename='F9.txt'))
+root.bind("<Alt-F10>",handlerAdaptor(saveFrame,filename='F10.txt'))
+root.bind("<Alt-F11>",handlerAdaptor(saveFrame,filename='F11.txt'))
+root.bind("<Alt-F12>",handlerAdaptor(saveFrame,filename='F12.txt')) 
 can = Canvas(root,width=1000,height=1000)
 can.place(x=0,y=0)
 
@@ -384,7 +407,7 @@ def button3():
 ##Button(root,text='button2',command=button2).place(x=1100,y=500)
 
 
-##randomSet()
-##freshNumbers(None)
+randomSet()
+freshNumbers(None)
 root.mainloop()
 
