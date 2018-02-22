@@ -19,7 +19,7 @@ def insert(pid,creator,typ,tagString,hmode):
         print(e)
 
 # tags(list),creators(list)
-def search(tags,creators=[],hmode=[0,1,2,3,4]):
+def search(tags,creators=[],hmode=[1,2,3,4,5]):
     sql = "SELECT * FROM pxv WHERE ("
     for i in range(len(tags)):
         s="(tags LIKE '%"+tags[i]+"%') "

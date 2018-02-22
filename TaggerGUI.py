@@ -7,6 +7,7 @@ import data as dt
 import pixiv as p
 
 stat = ('','')
+mode = 'normal'
 
 def test():
     print('test')
@@ -86,6 +87,7 @@ def updateData():
     return True
 
 def ret(event):
+    if mode!='normal':return
     if not updateData():
         print('error')
         return
@@ -127,6 +129,7 @@ def statChange(v1,v2):
     
 
 def keypress(event):
+    if mode!='normal':return
     global stat
     c=event.keysym
     # reset
@@ -370,21 +373,57 @@ tagnum.bind("<Button-1>",freshNumbers)
 untagnum.bind("<Button-1>",freshNumbers)
 totalnum.bind("<Button-1>",freshNumbers)
 
+##mode = 'search'
+class searchFrame:
+    def __init__(self):
+        self.fm = Frame(root,width=500,height=500)
+        self.t1 = StringVar()
+        self.e = Entry(self.fm,textvariable=self.t1)
+        self.e.pack()
+        Button(self.fm,text='search',command=self.search).pack()
+        self.fm.place(x=1350,y=600)
+    def search(self):
+        t = self.t1.get()
+        info = dt.search([t])
+        lst=info
+        if len(lst)>9:
+            lst=lst[0:9]
+        self.showImg(lst)
+    def showImg(self,lst):
+        for i in range(1,10):
+            ib[i].clearTags()
+        path=['']
+        for i in range(len(lst)):
+            pth=r'./img/'+lst[i][1]+r'/'+lst[i][0]
+            if lst[i][2]=='set':
+                pth = pth+r'/'+lst[i][0]+r'_0'
+            path.append(pth)
+        for i in range(1,10):
+            ib[i].pid = lst[i-1][0]
+            ib[i].creator = lst[i-1][1]
+            ib[i].typ = lst[i-1][2]
+            try:
+                ib[i].showImg(path[i]+'.jpg')
+            except:
+                ib[i].showImg(path[i]+'.png')
+sf = searchFrame()
+        
+
 # 换一批按键
-Button(root,text='换一批',command=randomSet).place(x=1300,y=600)
+Button(root,text='换一批',command=randomSet).place(x=1100,y=600)
 
 # 全屏切换
 def screenSwitch(state):
     root.attributes("-fullscreen",state)
     if state:
         fullon.place_forget()
-        fulloff.place(x=1300,y=700)
+        fulloff.place(x=1100,y=700)
     else:
         fulloff.place_forget()
         fullon.place(x=1300,y=700)
 fullon = Button(root,text='全屏',command=lambda:screenSwitch(True))
 fulloff = Button(root,text='退出全屏',command=lambda:screenSwitch(False))
-fulloff.place(x=1300,y=700)
+fulloff.place(x=1100,y=700)
 
 def btclick():
     print(ib5.addTag('tagtagtag'))
